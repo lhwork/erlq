@@ -17,11 +17,11 @@ get_proc_name(Queue) ->
     list_to_atom("queue_"++Queue).
 
 put(Ref, Queue, Item) ->
-    io:format("queue ~p set ~p is ~p~n", [Ref, Queue, Item]),
+    % io:format("queue ~p set ~p is ~p~n", [Ref, Queue, Item]),
     gen_server:call(Ref, {put, Queue, Item}).
 
 get(Ref, Queue) ->
-    io:format("queue ~p get ~p~n", [Ref, Queue]),
+    % io:format("queue ~p get ~p~n", [Ref, Queue]),
     case gen_server:call(Ref, {get, Queue}) of
         {ok, Item} ->
             {ok, Item};
@@ -39,7 +39,7 @@ flush(Ref, Queue) ->
     gen_server:cast(Ref, {new, Queue}).
 
 init({Queue}) ->
-    io:format("~p queue init.~n", [get_proc_name(Queue)]),
+    % io:format("~p queue init.~n", [get_proc_name(Queue)]),
     erlang:register(get_proc_name(Queue), self()),
     Dictionary = dict:new(),
     gen_server:cast(self(), {new, Queue}),
@@ -48,7 +48,7 @@ init({Queue}) ->
 handle_call({get, Queue}, _From, Dictionary) ->
     case dict:find(Queue, Dictionary) of
     {ok, {PidQ, ItemQ}} ->
-        io:format("get ~p ~p~n", [PidQ, ItemQ]),
+        % io:format("get ~p ~p~n", [PidQ, ItemQ]),
         case {PidQ, ItemQ} of
         {{_,_},{0,_}} ->
             {reply, {ok, empty}, Dictionary};
@@ -66,7 +66,7 @@ handle_call({get, Queue}, _From, Dictionary) ->
 handle_call({put, Queue, Item}, _From, Dictionary) ->
     case dict:find(Queue, Dictionary) of
     {ok, {PidQ, ItemQ}} ->
-        io:format("put ~p ~p~n", [PidQ, ItemQ]),
+        % io:format("put ~p ~p~n", [PidQ, ItemQ]),
         case {PidQ, ItemQ} of
         {{0,_},{_,_}} ->
             NewItemQ = queue_ins_tail(ItemQ, Item),
@@ -97,7 +97,7 @@ handle_call({memory}, _From, Dictionary) ->
                 [{memory, Size}] -> Size;
                 _ -> 0
              end,
-    io:format("~w ~n", [Result]),
+    % io:format("~w ~n", [Result]),
     {reply, {ok, Result}, Dictionary};
 
 handle_call(_Request, _From, Dictionary) ->

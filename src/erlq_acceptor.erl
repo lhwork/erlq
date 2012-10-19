@@ -43,9 +43,10 @@ acceptor_init(Parent, Port, Module) ->
    
 do_init(State) ->
     Opts = [binary, 
-            {packet, 0}, 
+            {packet, raw}, 
+            {backlog, 30},
+            {keepalive, true},
             {reuseaddr, true},
-            {backlog, 1024},
             {active, false}],
     case gen_tcp:listen(State#state.port, Opts) of
         {ok, ListenSocket} ->

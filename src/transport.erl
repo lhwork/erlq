@@ -26,12 +26,11 @@ stop(Ref) ->
 init([Port]) ->
     process_flag(trap_exit, true),
     erlq_stat:incr_curr_conns(),
-    {ok, #state{port = Port, transport = erlq_flash }}.
+    {ok, #state{port = Port, transport = erlq_memcache }}.
 
 handle_cast({set_socket, Socket}, State) ->
-    inet:setopts(Socket, [{active, once}, 
-                          {packet, line},
-                          binary]),    
+    inet:setopts(Socket, [{active, once}, {packet, raw}, binary]),
+    % inet:setopts(Socket, [{active, true}, {packet, raw}, binary]),
     {noreply, State#state{socket = Socket}};
 
 handle_cast(stop, State) ->
@@ -50,7 +49,7 @@ handle_info({tcp_closed, Socket}, State)
 handle_info({tcp, Socket, Data}, State)
   when Socket == State#state.socket ->
     inet:setopts(Socket, [{active, once}]),
-    dispatch(Data, erlq_flash, State);
+    dispatch(Data, State);
 
 handle_info({'EXIT', _, _}, State) ->
     %% ignore proxy exit
@@ -71,8 +70,8 @@ code_change(_OldVsn, State, _Extra) ->
 
 %%% Existing connection 
 
-dispatch(Data, Mod, State = #state{transport = Mod, socket = Socket}) ->
-    io:format("dispatch data : ~p~n", [Data]),
+dispatch(Data, State = #state{transport = Mod, socket = Socket}) ->
+    % io:format("dispatch data : ~p~n", [Data]),
     case Mod:process(Socket, Data, State) of
         {reply, DataToSend, State} ->
             gen_tcp:send(Socket, DataToSend),

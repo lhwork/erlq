@@ -115,17 +115,17 @@ queue_stat(Queue, State) ->
 
 all(State) ->
     QueueKeys = dict:fetch_keys(State#state.store),
-    io:format("Queue Keys ~p~n", [QueueKeys]),
+    % io:format("Queue Keys ~p~n", [QueueKeys]),
     TimeStat = lists:map(
                     fun(Name) -> global_stat(Name, State) end,
                         [time, version, curr_connections]
                 ),
-    io:format("all time stat: ~p~n", [TimeStat]),
+    % io:format("all time stat: ~p~n", [TimeStat]),
     ErlangStat = lists:map(
                     fun(Name) -> global_stat(Name, State) end,
                         [erlang_procs, erlang_version]
                 ),
-    io:format("all erlang stat: ~p~n", [ErlangStat]),
+    % io:format("all erlang stat: ~p~n", [ErlangStat]),
     Stats = TimeStat ++ lists:flatten([queue_stat(Q, State) || Q <- QueueKeys]) ++ ErlangStat,
     {reply, Stats, State}.
 
@@ -138,9 +138,9 @@ decr_curr_conns(State) ->
     {noreply, State2}.
 
 incr_cmd_get(Queue, State) ->
-    io:format("incr_cmd_get : ~p~n", [Queue]),
+    % io:format("incr_cmd_get : ~p~n", [Queue]),
     Stat = get_stat(Queue, State),
-    io:format("incr_cmd_get get_stat : ~p~n", [Stat]),
+    % io:format("incr_cmd_get get_stat : ~p~n", [Stat]),
     Stat2 = Stat#stat{cmd_get = Stat#stat.cmd_get + 1},
     NewStore = dict:store(Queue, Stat2, State#state.store),
     {noreply, State#state{store=NewStore}}.

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Module /Users/lihuan/Code/my-github/erlq/test/erlq_memcache_SUITE.erl</title>
+<meta http-equiv="cache-control" content="no-cache">
+<link rel="stylesheet" href="../../ct_default.css" type="text/css">
+<script type="text/javascript" src="../../jquery-latest.js"></script>
+<script type="text/javascript" src="../../jquery.tablesorter.min.js"></script>
+</head>
+<body>
+
+<pre>
+    1:-<b>module</b>(erlq_memcache_SUITE).
+    2:-<b>compile</b>(export_all).
+    3:
+<a name=all>    4:<b>all</b></a>() -&gt; [no_command_test_case, command_test_case, stats_test_case]. 
+    5:
+<a name=init_per_testcase>    6:<b>init_per_testcase</b></a>(_TestCase, Config) -&gt;
+    7:    erlq:start(),
+    8:    Config.
+    9:
+<a name=end_per_testcase><a name="10"></a>   10:<b>end_per_testcase</b></a>(_TestCase, _Config) -&gt;
+   11:    erlq:stop().    
+   12:
+<a name=command_test_case>   13:<b>command_test_case</b></a>(_Conf) -&gt;
+   14:    Socket = connect(),
+   15:
+   16:    Value = &lt;&lt;"value1"&gt;&gt;,
+   17:    Buf = io_lib:format("set key1 0 0 ~w\r\n~s\r\n", [byte_size(Value), Value]),
+   18:    gen_tcp:send(Socket, Buf),
+   19:
+<a name="20"></a>   20:    {ok, &lt;&lt;"STORED\r\n"&gt;&gt;} = gen_tcp:recv(Socket, 0),
+   21:
+   22:    gen_tcp:send(Socket, "get key1\r\n"),
+   23:
+   24:    {ok, &lt;&lt;"VALUE key1 0 6\r\n"&gt;&gt;} = gen_tcp:recv(Socket, 0),
+   25:    inet:setopts(Socket, [{packet, raw}]),
+   26:    {ok, &lt;&lt;"value1\r\n"&gt;&gt;} = gen_tcp:recv(Socket, 6+2),
+   27:    inet:setopts(Socket, [{packet, line}]),
+   28:    {ok, &lt;&lt;"END\r\n"&gt;&gt;} = gen_tcp:recv(Socket, 0),
+   29:
+<a name="30"></a>   30:    gen_tcp:send(Socket, "get key1\r\n"),
+   31:    {ok, &lt;&lt;"END\r\n"&gt;&gt;} = gen_tcp:recv(Socket, 0),
+   32:
+   33:    close(Socket).
+   34:
+<a name=no_command_test_case>   35:<b>no_command_test_case</b></a>(_Conf) -&gt;
+   36:    Socket = connect(),
+   37:
+   38:    gen_tcp:send(Socket, "no_command\r\n"),
+   39:    {ok, &lt;&lt;"ERROR\r\n"&gt;&gt;} = gen_tcp:recv(Socket, 0),
+<a name="40"></a>   40:
+   41:    close(Socket).
+   42:
+<a name=stats_test_case>   43:<b>stats_test_case</b></a>(_Conf) -&gt;
+   44:    Socket = connect(),
+   45:
+   46:    gen_tcp:send(Socket, "stats\r\n"),
+   47:    Stats = recv_stats(Socket, []),
+   48:
+   49:    close(Socket).
+<a name="50"></a>   50:
+<a name=recv_stats>   51:<b>recv_stats</b></a>(Socket, Stats) -&gt;
+   52:    {ok, Data} = gen_tcp:recv(Socket, 0),
+   53:    case Data of
+   54:        &lt;&lt;"STAT", _/binary&gt;&gt; -&gt;
+   55:            ["STAT", Name|Values] =
+   56:                string:tokens(binary_to_list(Data), " \r\n"),
+   57:            Stats2 = [{list_to_atom(Name), string:join(Values, " ")} | Stats],
+   58:            recv_stats(Socket, Stats2);
+   59:        &lt;&lt;"END", _/binary&gt;&gt; -&gt;
+<a name="60"></a>   60:            Stats
+   61:    end.
+   62:
+<a name=connect>   63:<b>connect</b></a>() -&gt;
+   64:    {ok, Socket} =
+   65:        gen_tcp:connect({127,0,0,1}, 11211, [binary, {packet, line}, {active, false}]),
+   66:    Socket.
+   67:
+<a name=close>   68:<b>close</b></a>(Socket) -&gt;
+   69:    gen_tcp:send(Socket, "quit\r\n"),
+<a name="70"></a>   70:    gen_tcp:close(Socket).
+</pre>
+</body>
+</html>

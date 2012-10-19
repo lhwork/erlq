@@ -1,0 +1,50 @@
+=== Suite started at 2012-10-19 16:08:46
+=== Starting test, 3 test cases
+=cases         3
+=user          lihuan
+=host          localhost
+=hosts         localhost 
+=emulator_vsn  5.9.2
+=emulator      beam
+=otp_release   R15B02
+=started       2012-10-19 16:08:46
+=case          ct_framework:init_per_suite
+=logfile       ct_framework.init_per_suite.html
+=group_props   [{suite,erlq_memcache_SUITE}]
+=started       2012-10-19 16:08:46
+=ended         2012-10-19 16:08:46
+=result        ok
+=elapsed       2.0e-6
+=case          erlq_memcache_SUITE:no_command_test_case
+=logfile       erlq_memcache_suite.no_command_test_case.html
+=started       2012-10-19 16:08:46
+=ended         2012-10-19 16:08:46
+=result        ok
+=elapsed       0.001273
+=case          erlq_memcache_SUITE:command_test_case
+=logfile       erlq_memcache_suite.command_test_case.html
+=started       2012-10-19 16:08:46
+=ended         2012-10-19 16:08:46
+=result        ok
+=elapsed       0.002193
+=case          erlq_memcache_SUITE:stats_test_case
+=logfile       erlq_memcache_suite.stats_test_case.html
+=started       2012-10-19 16:08:46
+=ended         2012-10-19 16:08:46
+=result        ok
+=elapsed       5.66e-4
+=case          ct_framework:end_per_suite
+=logfile       ct_framework.end_per_suite.html
+=group_props   [{suite,erlq_memcache_SUITE}]
+=started       2012-10-19 16:08:46
+=ended         2012-10-19 16:08:46
+=result        ok
+=elapsed       1.0e-6
+=group_time    0.127s
+=== TEST COMPLETE, 3 ok, 0 failed of 3 test cases
+
+=finished      2012-10-19 16:08:46
+=failed        0
+=successful    3
+=user_skipped  0
+=auto_skipped  0

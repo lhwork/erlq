@@ -1,13 +1,13 @@
 
 -module(erlq).
 
--export([start/0, start/1]).
+-export([start/0, start/1, stop/0]).
 
 start() ->
     start([]).
 
 start([]) ->
-    start(8081);
+    start(11211);
 
 start([Port]) 
   when is_atom(Port) ->
@@ -18,5 +18,7 @@ start(Port)
     application:set_env(erlq, listen_port, Port),
     application:start(erlq).
 
+stop() ->
+    application:stop(erlq).
 
 
