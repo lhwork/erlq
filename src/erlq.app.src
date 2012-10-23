@@ -23,6 +23,6 @@
                   stdlib 
                  ]},
   {mod, {erlq_app, []}},
-  {env, []}
+  {env, [{log_path, "./logs/erlq.log"}]}
  ]
 }.

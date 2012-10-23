@@ -31,6 +31,9 @@ stop(_S) ->
 %% Supervisor behaviour callbacks
 
 init([Port, Module]) ->
+    filelib:ensure_dir("./logs/"),
+    LogPath = erlq_admin:get_env(log_path, "./logs/erlq.log"),
+    error_logger:add_report_handler(ejabberd_logger_h, LogPath),
     {ok,
      {_SupFlags = {one_for_one, ?MAX_RESTART, ?MAX_TIME},
       [
@@ -110,5 +113,6 @@ init([]) ->
       ]
      }
     }.
+
 
 
