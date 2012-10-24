@@ -1,4 +1,5 @@
 import pylibmc
+import cPickle as pickle
 from time import time,sleep
 
 def main():
@@ -12,7 +13,8 @@ def main():
     mc = pylibmc.Client([opts.server_address])
 
     l = [str(i) for i in xrange(100000)]
-    v = 'v'* 1024     # 1K
+    #v = 'v'* 1024     # 1K
+    v = {'uid':'rekoo1','name':'test','fids':[str(x) for x in xrange(5700090,5700095)],'data':{'type':3,'msg':'kdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddkddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'}}
     if opts.method == 'write':
         print 'Create Queue 100000.'
         start = time()

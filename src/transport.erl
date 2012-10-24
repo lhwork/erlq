@@ -7,6 +7,8 @@
 -export([init/1, handle_call/3, handle_cast/2, 
          handle_info/2, terminate/2, code_change/3]).
 
+-include("erlq.hrl").
+
 -record(state, {
           port,
           socket,
@@ -48,6 +50,7 @@ handle_info({tcp_closed, Socket}, State)
 
 handle_info({tcp, Socket, Data}, State)
   when Socket == State#state.socket ->
+    ?DEBUG("tcp socket data : ~p~n", [Data]),
     inet:setopts(Socket, [{active, once}]),
     dispatch(Data, State);
 

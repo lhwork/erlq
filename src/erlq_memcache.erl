@@ -8,7 +8,7 @@ stop(State) ->
     {ok, State}.
 
 process(Socket, Data, State) ->
-    % io:format("parse data ~p~n", [string:tokens(binary_to_list(Data), " \r\n")]),
+    ?DEBUG("parse data ~p~n", [string:tokens(binary_to_list(Data), " \r\n")]),
     dispatch(Socket, string:tokens(binary_to_list(Data), " \r\n"), State).
 
 dispatch(_Socket, ["get", Key], State) ->
@@ -94,11 +94,12 @@ recv_set_data(_Socket, ["set", Key, _Flags, "0", Bytes], State) ->
                       {ok, Pid} ->
                           Pid
                   end,
-            case erlq_queue:put(Ref, Key, Value) of
+            NewValue = list_to_binary(Value),
+            case erlq_queue:put(Ref, Key, NewValue) of
                 ok ->
                     gen_tcp:send(_Socket, <<"STORED\r\n">>),
                     erlq_stat:incr_cmd_set(Key),
-                    erlq_stat:add_bytes_write(Key, Value),
+                    erlq_stat:add_bytes_write(Key, NewValue),
                     {noreply, State};
                 _ ->
                     send_error_and_close("Failed to write.", State)
