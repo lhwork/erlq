@@ -6,9 +6,7 @@
 -export([start_queue/1]).
 -export([start/2, stop/1, init/1]).
 
--define(MAX_RESTART,    5).
--define(MAX_TIME,      60).
--define(LISTEN_PORT, 8081).
+-include("erlq.hrl").
 
 %% A startup function for new client connection handling.
 %% To be called by the TCP listener process.
@@ -20,7 +18,9 @@ start_queue(Key) ->
     supervisor:start_child(erlq_queue_sup, [Key]).
 
 start(_Type, _Args) ->
+    ejabberd_loglevel:set(4),
     Port = erlq_admin:get_env(listen_port, ?LISTEN_PORT),
+    ?INFO_MSG("erlq ~s is started in the node ~p", [?VERSION, node()]),
     supervisor:start_link({local, ?MODULE}, 
                           ?MODULE, 
                           [Port, transport]).

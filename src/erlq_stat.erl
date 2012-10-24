@@ -10,8 +10,6 @@
          code_change/3
         ]).
 
--define(BOOTTIME, {Msec, Sec, _Usec} = now(),1000000 * Msec + Sec.).
-
 -record(stat, {
           boot_time, cmd_get, cmd_set, bytes_read, bytes_write
     }).

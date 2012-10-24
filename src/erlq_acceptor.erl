@@ -5,6 +5,8 @@
 
 -export([acceptor_init/3, acceptor_loop/1]).
 
+-include("erlq.hrl").
+
 -record(state, {
           parent,
           module,  % Handling module
@@ -31,7 +33,7 @@ acceptor_init(Parent, Port, Module) ->
       port = Port,
       module = Module
      },
-    error_logger:info_msg("Listening on port ~p~n", [Port]),
+    ?INFO_MSG("Listening on port ~p~n", [Port]),
     case (catch do_init(State)) of
         {ok, ListenSocket} ->
             proc_lib:init_ack(State#state.parent, {ok, self()}),

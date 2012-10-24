@@ -2,7 +2,7 @@
 
 -export([process/3, stop/1]).
 
--define(MEMCACHE_TIMEOUT, 5000).
+-include("erlq.hrl").
 
 stop(State) ->
     {ok, State}.
