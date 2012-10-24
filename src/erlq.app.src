@@ -12,6 +12,9 @@
              erlq_queue,
              erlq_queue_proxy,
              erlq_stat,
+             dynamic_compile,
+             ejabberd_logger_h,
+             ejabberd_loglevel,
              reloader
             ]},
   {registered, [erlq_sup, 
